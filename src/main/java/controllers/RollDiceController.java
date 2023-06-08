@@ -1,4 +1,4 @@
-package com.codeup.codeupspringblog.controllers;
+package controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,10 +11,6 @@ import java.util.Random;
 @Controller
 public class RollDiceController {
 
-    @GetMapping("/index")
-    public String landingPage() {
-        return "index";
-    }
 
     @GetMapping("/roll-dice")
     public String rollDicePage() {
