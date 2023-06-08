@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Show</title>
@@ -11,6 +11,10 @@
 <h1 th:replace="partials/header :: header"></h1>
 <th:block th:text="${post.title}"></th:block>
 <th:block th:text="${post.body}"></th:block>
+<th:block th:text="${post.user.email}"></th:block>
+<ul>
+    <li th:each="category: ${post.categories}" th:text="${category.name}"></li>
+</ul>
 
 <footer th:replace="partials/footer :: footer"></footer>
 </body>

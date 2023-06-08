@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Create a New Park</title>
+</head>
+<body>
+<!-- Using Thymeleaf to interpret the model attribute of "park" in the th:object attribute -->
+<form th:action="@{/parks/create}" th:method="post" th:object="${park}">
+  <label for="name">Name: </label>
+  <!--   Bind the name field of the object to the input so that the field has value    -->
+  <input type="text" name="name" id="name" th:field="*{name}">
+  <!--   Bind the state field of the object to the input so that the field has value     -->
+  <select name="stateId" th:field="*{state}">
+    <option th:each="state : ${states}" th:value="${state.id}" th:text="${state.name}"></option>
+  </select>
+  <button>Create Park</button>
+</form>
+</body>
+</html>
