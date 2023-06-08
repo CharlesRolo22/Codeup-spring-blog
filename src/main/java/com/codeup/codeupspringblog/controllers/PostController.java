@@ -1,6 +1,6 @@
-package controllers;
+package com.codeup.codeupspringblog.controllers;
 
-import com.codeup.codeupspringblog.Post;
+import com.codeup.codeupspringblog.models.Post;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,16 +26,19 @@ public class PostController {
     public String singlePost(@PathVariable long id, Model model) {
         Post post = new Post("Title", "Description");
         model.addAttribute("post", post);
+
         return "posts/show";
     }
 
     @GetMapping("/posts/create")
     public String showPostForm() {
+
         return "posts/create";
     }
 
     @PostMapping("/posts/create")
     public String submitNewPost() {
+
         return "redirect:/posts";
     }
 }
