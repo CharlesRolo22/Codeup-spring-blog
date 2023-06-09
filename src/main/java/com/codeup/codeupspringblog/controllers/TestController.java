@@ -1,9 +1,11 @@
 package com.codeup.codeupspringblog.controllers;
 
 import com.codeup.codeupspringblog.models.Park;
+import com.codeup.codeupspringblog.models.User;
 import com.codeup.codeupspringblog.repositories.ParkRepository;
 import com.codeup.codeupspringblog.repositories.StateRepository;
 import com.codeup.codeupspringblog.services.EmailService;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -23,15 +25,17 @@ public class TestController {
         this.emailService = emailService;
     }
 
-
+    // Get Request Mapping for /test
     @GetMapping("/test")
+    // Set Response content type to text/html
     @ResponseBody
+    // define method that will return text/html
     public String test() {
         return "Hello Kotlin!";
     }
 
 
-
+    // /parks
     @GetMapping("/parks/{park}/{message}")
     @ResponseBody
     public String parks(@PathVariable String park, @PathVariable String message) {
@@ -40,8 +44,17 @@ public class TestController {
 
     @GetMapping("/parks")
     public String parks(Model model) {
+
+        User loggedInUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        System.out.println(loggedInUser.getEmail());
+        System.out.println(loggedInUser.getId());
+        System.out.println(loggedInUser.getUsername());
+
         List<Park> parks = parksDao.findAll();
         model.addAttribute("parks", parks);
+
+
         return "parks/index";
     }
 
@@ -54,16 +67,23 @@ public class TestController {
 
     @GetMapping("/parks/create")
     public String showParksForm(Model model) {
+
         model.addAttribute("states", statesDao.findAll());
+
         model.addAttribute("park", new Park());
         return "parks/create";
     }
 
 
-
+    // EDIT HINT
+//    @GetMapping("/parks/{id}/edit")
+    // 1. Find the Park using the PathVariable
+    // 2. Use the Model to send the Park to the form.
+    // 3. return the template for the edit.html
 
 
     @PostMapping("/parks/create")
+    // Using the @ModelAttribute annotation to receive the Park object being submitted from our form
     public String submitNewPark(@ModelAttribute Park park) {
         // Spring Recommended syntax for .findById() method.
 //        if(statesDao.findById(stateId).isPresent()) {
@@ -74,9 +94,11 @@ public class TestController {
 //        }
 
 
+        // Save the park and it's values into our database.
         parksDao.save(park);
 
-        //        emailService.prepareAndSend(park, "New Park has been founded!", "A new park has been founded by the name of: ");
+//        emailService.prepareAndSend(park, "New Park has been founded!", "A new park has been founded by the name of: ");
+
         return "redirect:/parks";
     }
 
