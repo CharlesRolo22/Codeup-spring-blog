@@ -16,12 +16,8 @@ public class UserDetailsLoader implements UserDetailsService {
         this.users = users;
     }
 
-
-    // The method below is coming from the UserDetailsService Interface,
-    // which we must define ourselves.
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // The findByUsername method needs to be established in our UserRepository
         User user = users.findByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException("No user found for " + username);

@@ -9,10 +9,13 @@
 <form th:action="@{/sign-up}" th:method="post" th:object="${user}">
   <label for="username">Username: </label>
   <input type="text" name="username" id="username" placeholder="Enter Username" th:field="*{username}">
+
   <label for="email">Email: </label>
   <input type="email" name="email" id="email" placeholder="example@gmail.com" th:field="*{email}">
+
   <label for="password">Password: </label>
   <input type="password" name="password" id="password" th:field-="*{password}">
+
   <button>Sign Up!</button>
 </form>
 </body>

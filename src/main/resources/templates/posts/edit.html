@@ -17,5 +17,8 @@
   </th:block>
   <button>Update</button>
 </form>
+<form th:method="post" th:action="@{/posts/{id}/delete (id = ${post.id})}">
+  <button>Delete</button>
+</form>
 </body>
 </html>

@@ -1,6 +1,5 @@
 package com.codeup.codeupspringblog.services;
 
-import com.codeup.codeupspringblog.models.Park;
 import com.codeup.codeupspringblog.models.Post;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,15 +14,15 @@ public class EmailService {
     @Autowired
     public JavaMailSender emailSender;
 
-    @Value("${spring.mail.from}")
-    private String from;
+    @Value("{spring.mail.from}")
+    private static String from;
 
-    public void prepareAndSend(Park park, String subject, String body) {
+    public void prepareAndSend(Post post, String subject, String body) {
         SimpleMailMessage msg = new SimpleMailMessage();
         msg.setFrom(from);
-        msg.setTo("nps@nps.gov");
+        msg.setTo(post.getUser().getEmail());
         msg.setSubject(subject);
-        msg.setText(body + park.getName());
+        msg.setText(body);
 
         try{
             this.emailSender.send(msg);

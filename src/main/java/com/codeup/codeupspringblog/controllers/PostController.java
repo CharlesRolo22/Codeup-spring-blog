@@ -3,28 +3,33 @@
 package com.codeup.codeupspringblog.controllers;
 
 import com.codeup.codeupspringblog.models.Post;
-import com.codeup.codeupspringblog.models.PostCategories;
 import com.codeup.codeupspringblog.models.User;
 import com.codeup.codeupspringblog.repositories.PostCategoriesRepository;
 import com.codeup.codeupspringblog.repositories.PostRepository;
 import com.codeup.codeupspringblog.repositories.UserRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.codeup.codeupspringblog.services.EmailService;
+
 
 @Controller
 public class PostController {
     private final PostRepository postsDao;
     private final UserRepository userDao;
     private final PostCategoriesRepository catDao;
+    private final EmailService emailService;
 
-    public PostController(PostRepository postsDao, UserRepository userDao, PostCategoriesRepository catDao) {
+    public PostController(PostRepository postsDao, UserRepository userDao, PostCategoriesRepository catDao, EmailService emailService) {
         this.postsDao = postsDao;
         this.userDao = userDao;
         this.catDao = catDao;
+        this.emailService = emailService;
     }
 
     @GetMapping("/posts")
@@ -55,8 +60,10 @@ public class PostController {
     @PostMapping("/posts/create")
 //    @RequestMapping(path = "/posts/create", method = RequestMethod.POST)
     public String submitNewPost(@ModelAttribute Post post) {
-        User user = userDao.findById(1L).get();
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         post.setUser(user);
+
+        emailService.prepareAndSend(post, "New Post Created!", post.getBody());
         postsDao.save(post);
         return "redirect:/posts";
     }
@@ -67,14 +74,27 @@ public class PostController {
             Post postToEdit = postsDao.findById(id).get();
             model.addAttribute("post", postToEdit);
         }
-        return "posts/create";
+        return "posts/edit";
     }
 
     @PostMapping("/posts/{id}/edit")
     public String updatePost(@ModelAttribute Post newPost) {
-        User user = userDao.findById(1L).get();
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         newPost.setUser(user);
         postsDao.save(newPost);
+        return "redirect:/posts";
+    }
+
+    @PostMapping("/posts/{id}delete")
+    public String deletePost (@PathVariable long id){
+        User loggedInUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Post posttoDelete = postsDao.findById(id).get();
+
+        if(loggedInUser.getId() == postTodelete.getUser().getID()) {
+            postsDao.deleteById(id);
+
+        }
+
         return "redirect:/posts";
     }
 

@@ -21,6 +21,20 @@ public class UserController {
     }
 
     @GetMapping("/sign-up")
+    public String showSignupForm(Model model){
+        model.addAttribute("user", new User());
+        return "users/sign-up";
+    }
+
+    @PostMapping("/sign-up")
+    public String saveUser(@ModelAttribute User user){
+        String hash = encoder.encode(user.getPassword());
+        user.setPassword(hash);
+        usersDao.save(user);
+        return "redirect:/login";
+    }
+
+    @GetMapping("/sign-up")
     public String showLoginForm(Model model) {
         model.addAttribute("user", new User());
         return "sign-up";
